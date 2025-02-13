@@ -1,6 +1,6 @@
 | Fichier            | Dépendances                | Statut |
 |--------------------|----------------------------|--------|
-| `algebra.py`       | /                          | 🚧 A faire les frandjo |
+| `algebra.py`       | /                          | ✅ Terminé |
 | `dsa.py`           | `algebra.py`               | ✅ Terminé |
 | `ecdsa.py`         | `algebra.py`, `rfc7748.py` | 🚧 A faire les frandjo |
 | `elgamal.py`       | `algebra.py`               | 🚧 A faire les frandjo |
