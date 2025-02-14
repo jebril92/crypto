@@ -20,14 +20,20 @@ def DSA_generate_keys():
     private, public = randint(1, PARAM_Q - 1), pow(PARAM_G, randint(1, PARAM_Q - 1), PARAM_P)
     return private, public
 
-def DSA_sign(private_key, message):
-    while True:
-        k, r = DSA_generate_nonce(), pow(PARAM_G, DSA_generate_nonce(), PARAM_P) % PARAM_Q
-        if r:
-            hash_m = H(message)
-            s = (mod_inv(k, PARAM_Q) * (hash_m + private_key * r)) % PARAM_Q
-            if s:
-                return r, s
+def DSA_sign(private_key, message, k=None):
+    if k is None:
+        k = DSA_generate_nonce()
+
+    r = pow(PARAM_G, k, PARAM_P) % PARAM_Q
+    if r == 0:
+        return DSA_sign(private_key, message, k)
+
+    hash_m = H(message)
+    s = (mod_inv(k, PARAM_Q) * (hash_m + private_key * r)) % PARAM_Q
+    if s == 0:
+        return DSA_sign(private_key, message, k)
+
+    return r, s
 
 def DSA_verify(public_key, message, signature):
     r, s = signature
