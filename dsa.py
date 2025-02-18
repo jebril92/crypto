@@ -17,8 +17,9 @@ def DSA_generate_nonce():
     return randint(1, PARAM_Q - 1)
 
 def DSA_generate_keys():
-    private, public = randint(1, PARAM_Q - 1), pow(PARAM_G, randint(1, PARAM_Q - 1), PARAM_P)
-    return private, public
+    private_key = randint(1, PARAM_Q - 1)
+    public_key = pow(PARAM_G, private_key, PARAM_P)
+    return private_key, public_key
 
 def DSA_sign(private_key, message, k=None):
     if k is None:
