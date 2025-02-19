@@ -42,17 +42,20 @@ def EGM_encrypt(public_key, message):
 def EGA_encrypt(public_key, message):
     k = randint(1, PARAM_Q - 1)
     c1 = pow(PARAM_G, k, PARAM_P)
-    c2 = (pow(public_key, k, PARAM_P) + message) % PARAM_P
-    return c1, c2
+    gm = pow(PARAM_G, message, PARAM_P)
+    c2 = (pow(public_key, k, PARAM_P) * gm) % PARAM_P
+    return (c1, c2)
 
 
 def EG_decrypt(private_key, ciphertext, mode="multiplicative"):
     c1, c2 = ciphertext
     s = pow(c1, private_key, PARAM_P)
-
     if mode == "multiplicative":
         return (c2 * mod_inv(s, PARAM_P)) % PARAM_P
     elif mode == "additive":
-        return (c2 - s) % PARAM_P
+        gm = (c2 * mod_inv(s, PARAM_P)) % PARAM_P
+        return gm
     else:
-        raise ValueError("Invalid mod, use 'multiplicative' or 'additive'")
+        raise ValueError("Invalid mode, use 'multiplicative' or 'additive'")
+
+
