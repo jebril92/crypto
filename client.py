@@ -24,8 +24,6 @@ def send_public_key_sign():
         data = response.json()
         user_id = data["id"]
         server_public_key = data["pubkey"]
-        print("Clé publique envoyée, ID reçu =", user_id)
-        print("Clé publique du serveur pour le chiffrement =", server_public_key)
     except requests.RequestException as e:
         print("[ERREUR] Impossible d'envoyer la clé publique :", e)
 
@@ -40,14 +38,14 @@ def encrypt_vote(vote_list):
 
 def sign_vote(encrypted_votes):
     message_str = "".join(str(ev) for ev in encrypted_votes)
-    r, s = ECDSA_sign(private_key_sign, message_str.replace('(', '[').replace(')', ']'))
+    message_str = message_str.replace('(', '[').replace(')', ']')
+    r, s = ECDSA_sign(private_key_sign, message_str)
     return (r, s)
 
 def send_vote(vote_list):
     url = f"http://{HOST}:{PORT}/api/vote"
 
     encrypted_votes = encrypt_vote(vote_list)
-
     signature = sign_vote(encrypted_votes)
 
     payload = {
@@ -61,7 +59,6 @@ def send_vote(vote_list):
         response.raise_for_status()
 
         data = response.json()
-        print("Réponse du serveur (vote) :", data)
     except requests.RequestException as e:
         print("[ERREUR] Impossible d'envoyer le vote :", e)
 
@@ -71,7 +68,20 @@ def main():
     if not user_id or not server_public_key:
         print("Impossible de récupérer l'ID ou la clé publique du serveur, arrêt.")
         return
-    my_vote = [1, 0, 0, 0, 0]
+    while True:
+        try:
+            choice = int(input("Pour quel candidat votez-vous ? (1-5) : "))
+            if 1 <= choice <= 5:
+                print("Vote bien pris en compte.")
+                break
+            else:
+                print("Choix invalide, réessayez.")
+        except ValueError:
+            print("Choix invalide, réessayez.")
+    my_vote = [0, 0, 0, 0, 0]
+    my_vote[choice - 1] = 1
+
     send_vote(my_vote)
+
 if __name__ == "__main__":
     main()
