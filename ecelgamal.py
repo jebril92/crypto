@@ -29,7 +29,6 @@ def EGencode(message):
     if message == 1:
         return (BaseU, BaseV)
 
-
     point = (BaseU, BaseV)
     for _ in range(message - 1):
         point = add(*point, BaseU, BaseV, p)
@@ -57,19 +56,14 @@ def ECEG_decrypt(private_key, ciphertext):
     S = mult(private_key, C1[0], C1[1], p)
     M = sub(C2[0], C2[1], S[0], S[1], p)
 
-    # Debug line
-    print(f"M after decryption {M}")
-
     if M == (1, 0):
         return 0
     elif M == (BaseU, BaseV):
         return 1
-
+    
     point = (BaseU, BaseV)
     for i in range(2, 100):
         point = add(*point, BaseU, BaseV, p)
         if M == point:
             return i
-
     return -1
-
