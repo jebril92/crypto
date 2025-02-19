@@ -64,7 +64,7 @@ def test_homorphic_mult():
 
     res = EG_decrypt(autre_private_key, (r1 * r2, c1 * c2), mode="multiplicative")
     print(int_to_bytes(res))
-    assert res != m1 * m2
+    assert res == m1 * m2
 
 def test_homorphic_add():
     private_key, public_key = EG_generate_keys()
@@ -77,4 +77,4 @@ def test_homorphic_add():
     (r5, c5) = EGA_encrypt(public_key, 0)
 
     res = EG_decrypt(autre_private_key, (r1 + r2 + r3+ r4 + r5, c1 + c2+ c3+ c4 + c5), mode="additive")
-    assert res != 3
+    assert res == 3

@@ -44,4 +44,4 @@ def test_additive():
     (r5, c5) = ECEG_encrypt(public_key, 0)
 
     result = ECEG_decrypt(autre_private_key, (r1 + r2 + r3+ r4 + r5, c1 + c2+ c3+ c4 + c5))
-    assert result != 3
+    assert result == 3
