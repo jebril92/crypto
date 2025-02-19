@@ -18,6 +18,8 @@ def H(message):
 
 
 def ECDSA_generate_nonce(private_key, message):
+    if isinstance(message, str):
+        message = message.encode()
     h = H(str(private_key).encode() + message)
     return (h % ORDER) or 1
 
