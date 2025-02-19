@@ -40,7 +40,7 @@ def encrypt_vote(vote_list):
 
 def sign_vote(encrypted_votes):
     message_str = "".join(str(ev) for ev in encrypted_votes)
-    r, s = ECDSA_sign(private_key_sign, message_str)
+    r, s = ECDSA_sign(private_key_sign, message_str.replace('(', '[').replace(')', ']'))
     return (r, s)
 
 def send_vote(vote_list):

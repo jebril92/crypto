@@ -23,6 +23,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
         for i in range(len(candidat_list)):
             result[i] = bruteECLog(*ECEG_decrypt(private_key, candidat_list[i]))
 
+        print(result)
         max_index = 0
         for i in range(1, len(result)):
             if result[i] > result[max_index]:
@@ -62,8 +63,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
             user_id = data['id']
             pubkey_client = keyStore[user_id]
-
-            if ECDSA_verify( pubkey_client, ''.join(str(v) for v in voteList), (r, s)):
+            if ECDSA_verify(pubkey_client, ''.join(str(v) for v in voteList), (r, s)):
                 for i in range(len(candidat_list)):
                     if candidat_list[i] is None:
                         candidat_list[i] = voteList[i]
