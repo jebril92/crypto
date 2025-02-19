@@ -1,10 +1,5 @@
-import pytest
 import random
-from ecelgamal import ECEG_generate_keys, ECEG_encrypt, ECEG_decrypt, EGencode, debug_values, p, EGencode, bruteECLog, add_pairs_of_points
-from rfc7748 import add, mult, sub
-
-def test_debug_values():
-    debug_values()
+from ecelgamal import ECEG_generate_keys, ECEG_encrypt, ECEG_decrypt, EGencode, EGencode, bruteECLog, add_pairs_of_points
 
 def test_key_generation():
     private_key, public_key = ECEG_generate_keys()

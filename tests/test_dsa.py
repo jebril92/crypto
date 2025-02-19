@@ -1,4 +1,3 @@
-import pytest
 from dsa import DSA_generate_keys, DSA_sign, DSA_verify
 
 def test_key_generation():

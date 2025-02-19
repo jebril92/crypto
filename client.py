@@ -1,22 +1,21 @@
 import requests
 import json
-from ecelgamal import ECEG_encrypt, ECEG_generate_keys
+from ecelgamal import ECEG_encrypt
 from ecdsa import ECDSA_sign, ECDSA_generate_keys
+from dsa import DSA_generate_keys, DSA_sign
+from elgamal import EGA_encrypt
 
 HOST = "127.0.0.1"
 PORT = 8080
 
 server_public_key = None
 user_id = None
-isEliptic = True
-
-private_key_sign, public_key_sign = ECDSA_generate_keys()
 
 def get_protocol():
-    url = f"http://{HOST}:{PORT}/protocol"
+    url = f"http://{HOST}:{PORT}/api/protocol"
     response = requests.get(url)
     data = response.json()
-    print("Elliptic Curve" if data["isEC"] else "Classic ElGamal/DSA")
+    return bool(data['isEC'])
 
 
 def send_public_key_sign():
@@ -37,16 +36,25 @@ def send_public_key_sign():
 
 def encrypt_vote(vote_list):
     encrypted = []
-    for v in vote_list:
-        c = ECEG_encrypt(server_public_key, v)
-        encrypted.append(c)
+    if isEC:
+        for v in vote_list:
+            c = ECEG_encrypt(server_public_key, v)
+            encrypted.append(c)
+    else:
+        for v in vote_list:
+            c = EGA_encrypt(server_public_key, v)
+            encrypted.append(c)
     return encrypted
 
 def sign_vote(encrypted_votes):
     message_str = "".join(str(ev) for ev in encrypted_votes)
     message_str = message_str.replace('(', '[').replace(')', ']')
-    r, s = ECDSA_sign(private_key_sign, message_str)
-    return (r, s)
+    if isEC:
+        r, s = ECDSA_sign(private_key_sign, message_str)
+        return (r, s)
+    else:
+        r, s = DSA_sign(private_key_sign, message_str)
+        return (r, s)
 
 def send_vote(vote_list):
     url = f"http://{HOST}:{PORT}/api/vote"
@@ -69,7 +77,6 @@ def send_vote(vote_list):
         print("[ERREUR] Impossible d'envoyer le vote :", e)
 
 def main():
-    get_protocol()
     send_public_key_sign()
     if not user_id or not server_public_key:
         print("Impossible de récupérer l'ID ou la clé publique du serveur, arrêt.")
@@ -89,5 +96,9 @@ def main():
 
     send_vote(my_vote)
 
-if __name__ == "__main__":
-    main()
+isEC = get_protocol()
+if isEC:
+    private_key_sign, public_key_sign = ECDSA_generate_keys()
+else:
+    private_key_sign, public_key_sign = DSA_generate_keys()
+main()

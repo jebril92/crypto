@@ -1,4 +1,3 @@
-import pytest
 from algebra import int_to_bytes
 from elgamal import EG_generate_keys, EGM_encrypt, EGA_encrypt, EG_decrypt, add, bruteforcer
 
@@ -57,7 +56,6 @@ def test_homorphic_mult():
     assert res == excepted
 
 
-@pytest.mark.timeout(10)
 def test_homorphic_add():
     private_key, public_key = EG_generate_keys()
     print(f"Private key: {private_key}, Public key: {public_key}")

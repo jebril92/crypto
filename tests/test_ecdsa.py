@@ -1,4 +1,3 @@
-import pytest
 from ecdsa import ECDSA_generate_keys, ECDSA_sign, ECDSA_verify
 
 def test_key_generation():
