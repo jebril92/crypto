@@ -8,8 +8,16 @@ PORT = 8080
 
 server_public_key = None
 user_id = None
+isEliptic = True
 
 private_key_sign, public_key_sign = ECDSA_generate_keys()
+
+def get_protocol():
+    url = f"http://{HOST}:{PORT}/protocol"
+    response = requests.get(url)
+    data = response.json()
+    print("Elliptic Curve" if data["isEC"] else "Classic ElGamal/DSA")
+
 
 def send_public_key_sign():
     global user_id, server_public_key
@@ -27,11 +35,9 @@ def send_public_key_sign():
     except requests.RequestException as e:
         print("[ERREUR] Impossible d'envoyer la clé publique :", e)
 
-
 def encrypt_vote(vote_list):
     encrypted = []
     for v in vote_list:
-        # v = 0 ou 1
         c = ECEG_encrypt(server_public_key, v)
         encrypted.append(c)
     return encrypted
@@ -62,8 +68,8 @@ def send_vote(vote_list):
     except requests.RequestException as e:
         print("[ERREUR] Impossible d'envoyer le vote :", e)
 
-
 def main():
+    get_protocol()
     send_public_key_sign()
     if not user_id or not server_public_key:
         print("Impossible de récupérer l'ID ou la clé publique du serveur, arrêt.")
