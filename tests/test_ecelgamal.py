@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.insert(0, os.path.abspath("dependencies"))
+
 import random
 from ecelgamal import ECEG_generate_keys, ECEG_encrypt, ECEG_decrypt, EGencode, EGencode, bruteECLog, add_pairs_of_points
 
