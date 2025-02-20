@@ -1,5 +1,6 @@
 import sys
 import os
+import threading
 sys.path.insert(0, os.path.abspath("dependencies"))
 import json
 import logging
@@ -121,6 +122,9 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             self._set_response(200)
             response = {"message": "✅ Vote enregistré avec succès !"}
             self.wfile.write(json.dumps(response).encode('utf-8'))
+
+            if vote_received == 10:
+                threading.Thread(target=self.server.shutdown).start()
 
         except json.JSONDecodeError:
             logging.error("❌ JSON invalide dans /api/vote")
